@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react';
-import { CheckCircle, Download, Home, ShoppingBag } from 'lucide-react';
+import { useEffect, useState } from 'react';
+import { CheckCircle, Home, ShoppingBag } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { formatPrice } from '../../utils/helpers.js';
 
