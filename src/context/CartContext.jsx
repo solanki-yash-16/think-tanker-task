@@ -1,42 +1,39 @@
-import { createContext, useContext } from "react";
-import { useLocalStorage } from "../hooks/useLocalStorage.js";
-import { STORAGE_KEYS } from "../utils/constants.js";
+import React, { createContext, useContext, useEffect } from 'react';
+import { useLocalStorage } from '../hooks/useLocalStorage.js';
+import { STORAGE_KEYS } from '../utils/constants.js';
 
 const CartContext = createContext();
 
 export const useCart = () => {
   const context = useContext(CartContext);
   if (!context) {
-    throw new Error("useCart must be used within a CartProvider");
+    throw new Error('useCart must be used within a CartProvider');
   }
   return context;
 };
 
 export const CartProvider = ({ children }) => {
-  const [cartItems, setCartItems] = useLocalStorage(
-    STORAGE_KEYS.CART_ITEMS,
-    []
-  );
+  const [cartItems, setCartItems] = useLocalStorage(STORAGE_KEYS.CART_ITEMS, []);
 
   const addToCart = (product, quantity = 1) => {
-    setCartItems((currentItems) => {
-      const existingItem = currentItems.find((item) => item.id === product.id);
-
+    setCartItems(currentItems => {
+      const existingItem = currentItems.find(item => item.id === product.id);
+      
       if (existingItem) {
-        return currentItems.map((item) =>
-          item.id === product.id
+        return currentItems.map(item =>
+          item.id === product.id 
             ? { ...item, quantity: item.quantity + quantity }
             : item
         );
       }
-
+      
       return [...currentItems, { ...product, quantity }];
     });
   };
 
   const removeFromCart = (productId) => {
-    setCartItems((currentItems) =>
-      currentItems.filter((item) => item.id !== productId)
+    setCartItems(currentItems => 
+      currentItems.filter(item => item.id !== productId)
     );
   };
 
@@ -45,9 +42,9 @@ export const CartProvider = ({ children }) => {
       removeFromCart(productId);
       return;
     }
-
-    setCartItems((currentItems) =>
-      currentItems.map((item) =>
+    
+    setCartItems(currentItems =>
+      currentItems.map(item =>
         item.id === productId ? { ...item, quantity } : item
       )
     );
@@ -59,9 +56,10 @@ export const CartProvider = ({ children }) => {
 
   const getCartTotal = () => {
     return cartItems.reduce((total, item) => {
-      const price =
-        item.discount > 0 ? item.price * (1 - item.discount / 100) : item.price;
-      return total + price * item.quantity;
+      const price = item.discount > 0 
+        ? item.price * (1 - item.discount / 100)
+        : item.price;
+      return total + (price * item.quantity);
     }, 0);
   };
 
@@ -70,17 +68,15 @@ export const CartProvider = ({ children }) => {
   };
 
   return (
-    <CartContext.Provider
-      value={{
-        cartItems,
-        addToCart,
-        removeFromCart,
-        updateQuantity,
-        clearCart,
-        getCartTotal,
-        getCartItemsCount,
-      }}
-    >
+    <CartContext.Provider value={{
+      cartItems,
+      addToCart,
+      removeFromCart,
+      updateQuantity,
+      clearCart,
+      getCartTotal,
+      getCartItemsCount
+    }}>
       {children}
     </CartContext.Provider>
   );

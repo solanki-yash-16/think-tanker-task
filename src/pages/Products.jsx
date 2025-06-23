@@ -1,11 +1,11 @@
-import React, { useState, useEffect } from "react";
-import { useSearchParams } from "react-router-dom";
-import { fetchProducts } from "../utils/api.js";
-import { debounce } from "../utils/helpers.js";
-import ProductCard from "../components/product/ProductCard.jsx";
-import SearchBar from "../components/product/SearchBar.jsx";
-import Pagination from "../components/product/Pagination.jsx";
-import LoadingSpinner from "../components/common/LoadingSpinner.jsx";
+import React, { useState, useEffect } from 'react';
+import { useSearchParams } from 'react-router-dom';
+import { fetchProducts } from '../utils/api.js';
+import { debounce } from '../utils/helpers.js';
+import ProductCard from '../components/product/ProductCard.jsx';
+import SearchBar from '../components/product/SearchBar.jsx';
+import Pagination from '../components/product/Pagination.jsx';
+import LoadingSpinner from '../components/common/LoadingSpinner.jsx';
 
 const Products = () => {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -14,12 +14,10 @@ const Products = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [total, setTotal] = useState(0);
-  const [searchQuery, setSearchQuery] = useState(
-    searchParams.get("search") || ""
-  );
-  const [selectedCategory, setSelectedCategory] = useState("");
+  const [searchQuery, setSearchQuery] = useState(searchParams.get('search') || '');
+  const [selectedCategory, setSelectedCategory] = useState('');
 
-  const loadProducts = async (page = 1, search = "", category = "") => {
+  const loadProducts = async (page = 1, search = '', category = '') => {
     setLoading(true);
     try {
       const response = await fetchProducts(page, 10, search, category);
@@ -28,7 +26,7 @@ const Products = () => {
       setTotalPages(response.totalPages);
       setTotal(response.total);
     } catch (error) {
-      console.error("Error loading products:", error);
+      console.error('Error loading products:', error);
     } finally {
       setLoading(false);
     }
@@ -46,25 +44,25 @@ const Products = () => {
       setSearchQuery(query);
       setCurrentPage(1);
       debouncedLoadProducts(1, query, selectedCategory);
-
+      
       // Update URL
       const params = new URLSearchParams();
-      if (query) params.set("search", query);
+      if (query) params.set('search', query);
       setSearchParams(params);
     };
 
-    window.addEventListener("searchProducts", handleSearch);
-    return () => window.removeEventListener("searchProducts", handleSearch);
+    window.addEventListener('searchProducts', handleSearch);
+    return () => window.removeEventListener('searchProducts', handleSearch);
   }, [selectedCategory, setSearchParams, debouncedLoadProducts]);
 
   const handleSearch = (query) => {
     setSearchQuery(query);
     setCurrentPage(1);
     loadProducts(1, query, selectedCategory);
-
+    
     // Update URL
     const params = new URLSearchParams();
-    if (query) params.set("search", query);
+    if (query) params.set('search', query);
     setSearchParams(params);
   };
 
@@ -77,7 +75,7 @@ const Products = () => {
   const handlePageChange = (page) => {
     setCurrentPage(page);
     loadProducts(page, searchQuery, selectedCategory);
-    window.scrollTo({ top: 0, behavior: "smooth" });
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   return (
@@ -100,7 +98,7 @@ const Products = () => {
 
       <div className="mb-6 flex items-center justify-between">
         <p className="text-gray-600 dark:text-gray-300">
-          {loading ? "Loading..." : `${total} products found`}
+          {loading ? 'Loading...' : `${total} products found`}
         </p>
         <div className="text-sm text-gray-500 dark:text-gray-400">
           Page {currentPage} of {totalPages}
